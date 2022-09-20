@@ -35,8 +35,8 @@ services:
         container_name: bitnami_magento245_skeleton
         image: 'docker.io/bitnami/magento:2.4.5'
         environment:
-            - MAGENTO_EXTERNAL_HTTP_PORT_NUMBER=5014
-#            - MAGENTO_EXTERNAL_HTTPS_PORT_NUMBER=5410
+            - MAGENTO_EXTERNAL_HTTP_PORT_NUMBER=5016
+#            - MAGENTO_EXTERNAL_HTTPS_PORT_NUMBER=5416
             - MAGENTO_ADMIN_URL_PREFIX=admin
             - MAGENTO_ENABLE_HTTPS=no
             - MAGENTO_ENABLE_ADMIN_HTTPS=no
