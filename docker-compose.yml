@@ -1,0 +1,69 @@
+version: "3.5"
+
+services:
+    mariadb:
+        container_name: bitnami_mariadb245_skeleton
+        image: 'docker.io/bitnami/mariadb:10.4.26'
+        user: "root"
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+            - MARIADB_USER=bn_magento
+            - MARIADB_DATABASE=bitnami_magento
+        volumes:
+            - ./mariadb_data24:/bitnami/mariadb
+        networks:
+            - dev_net
+        ports:
+            - 5015:3306
+
+    elasticsearch:
+        container_name: bitnami_elasticsearch245_skeleton
+        image: elasticsearch:7.17.6
+        environment:
+            - discovery.type=single-node
+            - bootstrap.memory_lock=true
+        volumes:
+            - ./elasticsearch_data24:/bitnami/elasticsearch/data
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        networks:
+            - dev_net
+
+    magento:
+        container_name: bitnami_magento245_skeleton
+        image: 'docker.io/bitnami/magento:2.4.5'
+        environment:
+            - MAGENTO_EXTERNAL_HTTP_PORT_NUMBER=5014
+#            - MAGENTO_EXTERNAL_HTTPS_PORT_NUMBER=5410
+            - MAGENTO_ADMIN_URL_PREFIX=admin
+            - MAGENTO_ENABLE_HTTPS=no
+            - MAGENTO_ENABLE_ADMIN_HTTPS=no
+            - BITNAMI_DEBUG=true
+            - MAGENTO_HOST=magento245-skeleton.local.cz
+            - MAGENTO_DATABASE_HOST=mariadb
+            - MAGENTO_DATABASE_PORT_NUMBER=3306
+            - MAGENTO_DATABASE_USER=root
+            - MAGENTO_DATABASE_NAME=bitnami_magento
+            - ELASTICSEARCH_HOST=elasticsearch
+            - ELASTICSEARCH_PORT_NUMBER=9200
+            - ALLOW_EMPTY_PASSWORD=yes
+            - MAGENTO_EXTRA_INSTALL_ARGS=--db-prefix=qa_
+            - PHP_ENABLE_OPCACHE=0
+        volumes:
+            - ./magento_data24:/bitnami/magento
+        depends_on:
+            - mariadb
+            - elasticsearch
+        networks:
+            - dev_net
+        ports:
+            - 5016:8080
+
+volumes:
+    dev-certs: {}
+
+networks:
+    dev_net:
+        name: dev_net_modules_magento245_skeleton
